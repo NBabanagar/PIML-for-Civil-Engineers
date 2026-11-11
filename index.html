@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PIML for Civil Engineers</title>
+<meta name="description" content="A three-hour hands-on course: physics-informed neural networks in PyTorch, built on one cantilever beam you can check by hand.">
+<meta name="theme-color" content="#0B1F45">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg-alt:#F4F6FA; --surface:#ffffff; --ink:#14213D; --ink-soft:#4A5672;
+  --line:#DDE2EC; --brand:#0B1F45; --accent:#C25E00; --accent-soft:#FCEBDC;
+  --blue:#3B6EA5; --green:#4C9A5E; --radius:14px;
+  --shadow:0 1px 2px rgba(11,31,69,.06),0 4px 16px rgba(11,31,69,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1424; --bg-alt:#121B2F; --surface:#16213A; --ink:#E7ECF5; --ink-soft:#A6B1C7;
+    --line:#26324D; --brand:#E7ECF5; --accent:#F0904A; --accent-soft:#3A2414;
+    --blue:#7FA8D6; --green:#7CC28C; --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1424; --bg-alt:#121B2F; --surface:#16213A; --ink:#E7ECF5; --ink-soft:#A6B1C7;
+  --line:#26324D; --brand:#E7ECF5; --accent:#F0904A; --accent-soft:#3A2414;
+  --blue:#7FA8D6; --green:#7CC28C; --shadow:none;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif}
+a{color:var(--blue)}
+code{font-family:"JetBrains Mono",monospace;font-size:.9em}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+section{padding:64px 0;border-top:1px solid var(--line)}
+section.alt{background:var(--bg-alt)}
+.eyebrow{font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
+h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.1;margin:0 0 16px;color:var(--brand)}
+h2{font-size:clamp(1.5rem,3.5vw,2.1rem);line-height:1.2;margin:0 0 12px;color:var(--brand)}
+h3{font-size:1.1rem;margin:0 0 6px}
+.lead{font-size:1.15rem;color:var(--ink-soft);max-width:720px}
+
+/* nav */
+header.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header.nav .wrap{display:flex;align-items:center;gap:20px;height:56px}
+.logo{font-weight:700;color:var(--brand);text-decoration:none;white-space:nowrap}
+.logo span{color:var(--accent);font-weight:600;margin-left:6px;font-size:.85rem}
+nav.links{display:flex;gap:18px;margin-left:auto;overflow-x:auto}
+nav.links a{color:var(--ink-soft);text-decoration:none;font-size:.92rem;white-space:nowrap}
+nav.links a:hover{color:var(--ink)}
+#theme{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;width:34px;height:34px;cursor:pointer;flex:none}
+@media (max-width:760px){nav.links{display:none}}
+
+/* hero */
+.hero{padding:72px 0 56px;border-top:0}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 28px;padding:0;list-style:none}
+.facts li{background:var(--bg-alt);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.92rem}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;padding:11px 18px;border-radius:10px;border:0}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px}
+
+/* grids and cards */
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-top:28px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.num{font-family:"JetBrains Mono",monospace;color:var(--accent);font-weight:500;font-size:.9rem}
+.card p{margin:6px 0 0;color:var(--ink-soft)}
+
+/* schedule */
+.sched{list-style:none;padding:0;margin:28px 0 0;border-left:2px solid var(--line)}
+.sched li{position:relative;padding:0 0 22px 24px}
+.sched li::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--blue)}
+.sched li.hands::before{background:var(--accent);border-color:var(--accent)}
+.sched li.brk::before{border-color:var(--line)}
+.sched time{font-family:"JetBrains Mono",monospace;font-size:.85rem;color:var(--ink-soft);margin-right:8px}
+.sched strong{display:inline}
+.sched p{margin:2px 0 0;color:var(--ink-soft)}
+.tag{display:inline-block;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:999px;margin-left:8px;vertical-align:2px;background:var(--accent-soft);color:var(--accent)}
+
+/* materials */
+.nb .meta{font-size:.82rem;color:var(--ink-soft);margin-bottom:6px}
+.nb .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.nb .actions a{font-size:.88rem;text-decoration:none;padding:7px 12px;border-radius:8px;border:1px solid var(--line);color:var(--ink)}
+.nb .actions a.colab{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.nb .actions .muted{font-size:.85rem;color:var(--ink-soft);padding:7px 0}
+.slides-card{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:28px}
+
+/* setup */
+.steps{counter-reset:s;list-style:none;padding:0;margin:24px 0 0;display:grid;gap:14px}
+.steps li{counter-increment:s;position:relative;padding-left:48px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--brand);color:var(--bg);display:grid;place-items:center;font-weight:700}
+.steps p{margin:2px 0 0;color:var(--ink-soft)}
+
+/* people, refs, faq */
+.person{display:grid;grid-template-columns:96px 1fr;gap:20px;align-items:start;margin-top:24px}
+.avatar{width:96px;height:96px;border-radius:50%;background:var(--bg-alt);border:1px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:1.6rem;color:var(--brand);overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.refs{padding-left:18px;color:var(--ink-soft)}
+.refs li{margin-bottom:6px}
+details{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--surface);margin-bottom:10px}
+summary{cursor:pointer;font-weight:600}
+details p{margin:10px 0 0;color:var(--ink-soft)}
+footer{padding:32px 0;border-top:1px solid var(--line);color:var(--ink-soft);font-size:.9rem}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top">PIML for Civil Engineers<span>Short course</span></a>
+    <nav class="links">
+      <a href="#about">About</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#materials">Slides &amp; notebooks</a>
+      <a href="#setup">Setup</a>
+      <a href="#instructor">Instructor</a>
+      <a href="#references">References</a>
+    </nav>
+    <button id="theme" aria-label="Toggle dark mode">◐</button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">British Council short course · 3 hours · hands-on</p>
+    <h1>Physics-informed machine learning for civil engineers</h1>
+    <p class="lead">Build a physics-informed neural network from scratch in PyTorch, on one cantilever beam you can check by hand: a simple model of an embedded retaining wall.</p>
+    <ul class="facts">
+      <li><strong>180 min</strong>, two hands-on blocks</li>
+      <li><strong>4 Colab notebooks</strong> with self-checks</li>
+      <li>Runs on the <strong>free Colab CPU</strong></li>
+      <li>Prerequisite: <strong>some Python</strong></li>
+    </ul>
+    <div class="btn-row">
+      <a class="btn" href="#materials">Slides &amp; notebooks</a>
+      <a class="btn ghost" href="#setup">Check your setup</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="alt">
+  <div class="wrap">
+    <p class="eyebrow">How the course works</p>
+    <h2>One beam, from data-only fit to inverse problem</h2>
+    <p class="lead">A cantilever under a uniform load q, and later a point load P at mid-span. It has an exact solution, so every error you see is a real error.</p>
+    <div class="grid">
+      <div class="card"><div class="num">01</div><h3>Why physics</h3><p>A data-only network fits the sensors well and still gets the bending moment wrong.</p></div>
+      <div class="card"><div class="num">02</div><h3>Forward PINN</h3><p>Write the physics and boundary losses yourself and check the result against statics.</p></div>
+      <div class="card"><div class="num">03</div><h3>Inverse PINN</h3><p>Recover the unknown load from noisy deflection readings. The load becomes a trainable parameter.</p></div>
+      <div class="card"><div class="num">04</div><h3>When it fails</h3><p>Point loads, spectral bias, domain decomposition, the limits of identifiability, and when to reach for neural operators.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="wrap">
+    <p class="eyebrow">Schedule</p>
+    <h2>Three hours, nine blocks</h2>
+    <p class="lead">Times are from the start of the session.</p>
+    <ol class="sched">
+      <li><time>0:00</time><strong>Why physics-informed ML?</strong><span class="tag">N0</span><p>Engineering decisions that need many runs, four challenges for data-only models, where bias enters, the PgNN / PINN / PeNN spectrum</p></li>
+      <li><time>0:15</time><strong>How networks learn and differentiate</strong><span class="tag">N0</span><p>Forward pass, backpropagation, derivatives with respect to the input, finite differences versus autodiff, activations</p></li>
+      <li><time>0:30</time><strong>Anatomy of a PINN</strong><span class="tag">N1</span><p>The workflow, collocation points and boundary terms, non-dimensionalisation, loss weights</p></li>
+      <li class="hands"><time>0:50</time><strong>Hands-on 1: the forward PINN</strong><span class="tag">N1</span><p>Four TODOs, checked against statics</p></li>
+      <li class="brk"><time>1:25</time><strong>Break</strong></li>
+      <li><time>1:35</time><strong>Inverse problems: back-analysis of the load</strong><span class="tag">N2</span><p>What is unknown on a real wall, the inverse loss, PINN versus data-only</p></li>
+      <li class="hands"><time>1:50</time><strong>Hands-on 2: the inverse PINN</strong><span class="tag">N2</span><p>Recover the load from sixteen noisy readings, then a class experiment on sensors and noise</p></li>
+      <li><time>2:20</time><strong>Failure modes of PINNs, and remedies</strong><span class="tag">N3</span><p>Loss balancing, self-adaptive PINNs, adaptive sampling, hard constraints, weak form; the point load, spectral bias and domain decomposition; why neural operators</p></li>
+      <li><time>2:50</time><strong>Wrap-up</strong><p>What we learned, and when to use a PINN</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- MATERIALS -->
+<section id="materials" class="alt">
+  <div class="wrap">
+    <p class="eyebrow">Course materials</p>
+    <h2>Slides and notebooks</h2>
+    <p class="lead">Each notebook opens directly in Google Colab. Use <em>File → Save a copy in Drive</em> to keep your own edits.</p>
+
+    <div class="card slides-card">
+      <div>
+        <h3>Lecture slides</h3>
+        <p>All 63 slides, as a PDF.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn" id="slides-view" href="#" target="_blank" rel="noopener">View slides</a>
+        <a class="btn ghost" id="slides-dl" href="#" download>Download PDF</a>
+      </div>
+    </div>
+
+    <div class="grid" id="nb-grid"><!-- filled by the script at the bottom --></div>
+  </div>
+</section>
+
+<!-- SETUP -->
+<section id="setup">
+  <div class="wrap">
+    <p class="eyebrow">Before the session · 5 minutes</p>
+    <h2>Check your setup</h2>
+    <p class="lead">Everything runs in the browser on Google Colab. Nothing to install.</p>
+    <ol class="steps">
+      <li><h3>Sign in to Google</h3><p>Any Google account works. Colab is free.</p></li>
+      <li><h3>Open notebook N0 in Colab</h3><p>Use the button in <a href="#materials">Slides &amp; notebooks</a>, then choose <em>Runtime → Run all</em>. If it runs to the end without errors, you are ready.</p></li>
+      <li><h3>Optional: a GPU</h3><p><em>Runtime → Change runtime type</em>. Not needed: every notebook is designed for the free CPU.</p></li>
+    </ol>
+    <p style="margin-top:20px;color:var(--ink-soft)">Prefer your own laptop? Python 3.10 or newer, then <code>pip install torch numpy matplotlib jupyter</code>.</p>
+  </div>
+</section>
+
+<!-- INSTRUCTOR -->
+<section id="instructor" class="alt">
+  <div class="wrap">
+    <p class="eyebrow">Instructor</p>
+    <h2>Who is teaching</h2>
+    <div class="person">
+      <div class="avatar"><img src="assets/img/instructor.jpg" alt="Portrait of Nandeesh Babanagar" width="96" height="96"></div>
+      <div>
+        <h3>Nandeesh Babanagar</h3>
+        <p style="margin:0;color:var(--ink-soft)">PhD student · EPSRC Centre for Doctoral Training in Future Infrastructure and Built Environment (FIBE2), Department of Engineering, University of Cambridge</p>
+        <p>I work with Prof. Brian Sheil and am part of the <a href="https://physicalai.build/research/" target="_blank" rel="noopener">Physical AI for the Built World</a> lab. My research focuses on building digital twins that optimise deep excavations using real-time monitoring and physics-informed machine learning.</p>
+        <p>
+          <a href="https://www.fibe-cdt.eng.cam.ac.uk/people/nandeesh-babanagar" target="_blank" rel="noopener">FIBE2 profile</a> ·
+          <a href="https://physicalai.build/research/" target="_blank" rel="noopener">Lab research</a> ·
+          <a href="https://scholar.google.com/citations?user=ArPbsGoAAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a> ·
+          <a href="https://www.linkedin.com/in/nandeesh-babanagar-420b40112" target="_blank" rel="noopener">LinkedIn</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REFERENCES: from the deck's reference slides (slides 62 and 63) -->
+<section id="references">
+  <div class="wrap">
+    <p class="eyebrow">References</p>
+    <h2>Sources used in the slides</h2>
+
+    <h3 style="margin-top:28px">Course case study</h3>
+    <ul class="refs">
+      <li>Babanagar, N. &amp; Sheil, B. (2026). <em>ISARC 2026</em> (cantilever case, PINN versus data-only, domain decomposition).</li>
+    </ul>
+
+    <h3 style="margin-top:24px">Physics-enhanced ML and PINNs</h3>
+    <ul class="refs">
+      <li>Cicirello, A. (2024). Physics-enhanced machine learning: a position paper for dynamical systems investigations. <em>J. Phys.: Conf. Ser.</em> 2909, 012034. <a href="https://arxiv.org/abs/2405.05987" target="_blank" rel="noopener">arXiv:2405.05987</a></li>
+      <li>Faroughi, S. et al. (2024). Physics-guided, physics-informed, and physics-encoded neural networks in scientific computing. <em>J. Comput. Inf. Sci. Eng.</em> 24, 040802.</li>
+      <li>Raissi, M., Perdikaris, P. &amp; Karniadakis, G.E. (2019). Physics-informed neural networks. <em>J. Comput. Phys.</em> 378, 686–707.</li>
+      <li>Cuomo, S. et al. (2022). Scientific machine learning through physics-informed neural networks: where we are and what's next. <em>J. Sci. Comput.</em> 92, 88.</li>
+      <li>Wang, S., Sankaran, S., Wang, H. &amp; Perdikaris, P. (2023). An expert's guide to training physics-informed neural networks. <a href="https://arxiv.org/abs/2308.08468" target="_blank" rel="noopener">arXiv:2308.08468</a></li>
+      <li>Hao, Z. et al. (2024). PINNacle: a comprehensive benchmark of physics-informed neural networks for solving PDEs. <em>NeurIPS 37</em> (Datasets and Benchmarks).</li>
+      <li>Lu, L. et al. (2021). DeepXDE. <em>SIAM Rev.</em> 63, 208–228.</li>
+    </ul>
+
+    <h3 style="margin-top:24px">Applications in civil engineering</h3>
+    <ul class="refs">
+      <li>Sahin, T. et al. (2024). Towards a hybrid digital twin: PINNs as surrogate model of a reinforced concrete beam. <a href="https://arxiv.org/abs/2405.08406" target="_blank" rel="noopener">arXiv:2405.08406</a></li>
+      <li>Gong, W. et al. (2024). Prediction of stratified ground consolidation via a PINN utilizing short-term excess pore water pressure monitoring data. <em>Comput.-Aided Civ. Infrastruct. Eng.</em></li>
+      <li>He, Q. et al. (2020). PINNs for multiphysics data assimilation with application to subsurface transport. <em>Adv. Water Resour.</em></li>
+      <li>Huang, Z. et al. (2026). PINN based inversion and prediction of natural chloride diffusion in uncracked and cracked concrete systems. <em>Comput. Struct.</em> 322, 108120.</li>
+      <li>Rahman, M.A., Zhang, T. &amp; Lu, Y. (2024). PINN-CHK: PINN for high-fidelity prediction of early-age cement hydration kinetics. <em>Neural Comput. Appl.</em> 36(22), 13665–13687.</li>
+      <li>Bekele, Y.W. (2021). Physics-informed deep learning for one-dimensional consolidation. <em>J. Rock Mech. Geotech. Eng.</em> 13.</li>
+      <li>Haghighat, E. et al. (2021). A physics-informed deep learning framework for inversion and surrogate modeling in solid mechanics. <em>Comput. Methods Appl. Mech. Eng.</em> 379, 113741.</li>
+      <li>Niaki, S.A. et al. (2021). PINN for modelling the thermochemical curing process of composite-tool systems during manufacture. <em>Comput. Methods Appl. Mech. Eng.</em> 384, 113959.</li>
+    </ul>
+
+    <h3 style="margin-top:24px">Failure modes and remedies</h3>
+    <ul class="refs">
+      <li>Rahaman, N. et al. (2019). On the spectral bias of neural networks. <em>ICML</em>.</li>
+      <li>Wang, S., Teng, Y. &amp; Perdikaris, P. (2021). Understanding and mitigating gradient flow pathologies in PINNs. <em>SIAM J. Sci. Comput.</em> 43, A3055–A3081.</li>
+      <li>Wang, S., Yu, X. &amp; Perdikaris, P. (2022). When and why PINNs fail to train: a neural tangent kernel perspective. <em>J. Comput. Phys.</em> 449, 110768.</li>
+      <li>Wang, S., Wang, H. &amp; Perdikaris, P. (2021). On the eigenvector bias of Fourier feature networks. <em>Comput. Methods Appl. Mech. Eng.</em> 384, 113938.</li>
+      <li>Tancik, M. et al. (2020). Fourier features let networks learn high-frequency functions in low dimensional domains. <em>NeurIPS 33</em>.</li>
+      <li>Bischof, R. &amp; Kraus, M.A. (2025). Multi-objective loss balancing for physics-informed deep learning. <em>Comput. Methods Appl. Mech. Eng.</em> 439, 117914.</li>
+      <li>McClenny, L.D. &amp; Braga-Neto, U. (2023). Self-adaptive physics-informed neural networks. <em>J. Comput. Phys.</em> 474, 111722.</li>
+      <li>Wu, C., Zhu, M., Tan, Q., Kartha, Y. &amp; Lu, L. (2023). A comprehensive study of non-adaptive and residual-based adaptive sampling for physics-informed neural networks. <em>Comput. Methods Appl. Mech. Eng.</em> 403, 115671.</li>
+      <li>Sukumar, N. &amp; Srivastava, A. (2022). Exact imposition of boundary conditions with distance functions in physics-informed deep neural networks. <em>Comput. Methods Appl. Mech. Eng.</em> 389, 114333.</li>
+      <li>Kharazmi, E., Zhang, Z. &amp; Karniadakis, G.E. (2021). hp-VPINNs: variational PINNs with domain decomposition. <em>Comput. Methods Appl. Mech. Eng.</em> 374, 113547.</li>
+      <li>Rezaei, S., Harandi, A., Moeineddin, A., Xu, B.-X. &amp; Reese, S. (2022). A mixed formulation for physics-informed neural networks as a potential solver for engineering problems in heterogeneous domains. <em>Comput. Methods Appl. Mech. Eng.</em> 401, 115616.</li>
+      <li>Jagtap, A.D., Kharazmi, E. &amp; Karniadakis, G.E. (2020). Conservative physics-informed neural networks on discrete domains for conservation laws. <em>Comput. Methods Appl. Mech. Eng.</em> 365, 113028.</li>
+      <li>Jagtap, A.D. &amp; Karniadakis, G.E. (2020). Extended PINNs (XPINN). <em>Commun. Comput. Phys.</em> 28, 2002–2041.</li>
+      <li>Yang, L., Meng, X. &amp; Karniadakis, G.E. (2021). B-PINNs: Bayesian physics-informed neural networks for forward and inverse PDE problems with noisy data. <em>J. Comput. Phys.</em> 425, 109913.</li>
+      <li>Wang, S., Sankaran, S. &amp; Perdikaris, P. (2024). Respecting causality for training physics-informed neural networks. <em>Comput. Methods Appl. Mech. Eng.</em> 421, 116813.</li>
+    </ul>
+
+    <h3 style="margin-top:24px">Neural operators</h3>
+    <ul class="refs">
+      <li>Lu, L., Jin, P., Pang, G., Zhang, Z. &amp; Karniadakis, G.E. (2021). Learning nonlinear operators via DeepONet based on the universal approximation theorem of operators. <em>Nat. Mach. Intell.</em> 3, 218–229.</li>
+      <li>Li, Z., Kovachki, N., Azizzadenesheli, K., Liu, B., Bhattacharya, K., Stuart, A. &amp; Anandkumar, A. (2021). Fourier neural operator for parametric partial differential equations. <em>ICLR 2021</em>.</li>
+      <li>Wang, S., Wang, H. &amp; Perdikaris, P. (2021). Learning the solution operator of parametric partial differential equations with physics-informed DeepONets. <em>Sci. Adv.</em> 7, eabi8605.</li>
+      <li>Li, Z., Zheng, H., Kovachki, N., Jin, D., Chen, H., Liu, B., Azizzadenesheli, K. &amp; Anandkumar, A. (2024). Physics-informed neural operator for learning partial differential equations. <em>ACM/IMS J. Data Sci.</em> <a href="https://doi.org/10.1145/3648506" target="_blank" rel="noopener">doi:10.1145/3648506</a></li>
+      <li>Kovachki, N. et al. (2023). Neural operator: learning maps between function spaces with applications to PDEs. <em>J. Mach. Learn. Res.</em> 24(89), 1–97.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <strong>Physics-informed machine learning for civil engineers</strong><br>
+    British Council short course · University of Cambridge
+  </div>
+</footer>
+
+<script>
+/* ============ EDIT THESE SETTINGS ============ */
+const SITE = {
+  user:   "NBabanagar",
+  repo:   "PIML-for-Civil-Engineers",
+  branch: "main",
+  slides: "slides/PIML_short_course.pdf",
+  showSolutions: false              // set to true after the session
+};
+
+/* File names must match exactly what is in your repo (case-sensitive). */
+const NOTEBOOKS = [
+  { id:"N0", title:"Why physics, and derivatives", when:"Blocks 1–2 · demo",
+    desc:"Data-only fit versus the bending moment; finite differences versus autodiff at fourth order.",
+    student:"notebooks/N0_student.ipynb", solution:"notebooks/N0_solution.ipynb" },
+  { id:"N1", title:"Forward PINN", when:"Hands-on 1",
+    desc:"Derivatives, physics loss, boundary loss, engineering values. Four TODOs.",
+    student:"notebooks/N1_student.ipynb", solution:"notebooks/N1_solution.ipynb" },
+  { id:"N2", title:"Inverse PINN", when:"Hands-on 2",
+    desc:"Recover the unknown load from sixteen noisy readings. Three TODOs and a class experiment.",
+    student:"notebooks/N2_student.ipynb", solution:"notebooks/N2_solution.ipynb" },
+  { id:"N3", title:"Point load lab", when:"Block 8 · after the course",
+    desc:"Narrow loads, extra points near the load, and domain decomposition with a one-line TODO.",
+    student:"notebooks/N3_student.ipynb", solution:"notebooks/N3_solution.ipynb" }
+];
+/* ============================================= */
+
+const gh    = p => `https://github.com/${SITE.user}/${SITE.repo}/blob/${SITE.branch}/${p}`;
+const colab = p => `https://colab.research.google.com/github/${SITE.user}/${SITE.repo}/blob/${SITE.branch}/${p}`;
+
+document.getElementById("slides-view").href = SITE.slides;
+document.getElementById("slides-dl").href   = SITE.slides;
+
+document.getElementById("nb-grid").innerHTML = NOTEBOOKS.map(n => `
+  <div class="card nb">
+    <div class="meta"><span class="num">${n.id}</span> · ${n.when}</div>
+    <h3>${n.title}</h3>
+    <p>${n.desc}</p>
+    <div class="actions">
+      <a class="colab" href="${colab(n.student)}" target="_blank" rel="noopener">Open in Colab</a>
+      <a href="${gh(n.student)}" target="_blank" rel="noopener">View on GitHub</a>
+      ${SITE.showSolutions
+        ? `<a href="${colab(n.solution)}" target="_blank" rel="noopener">Solution</a>`
+        : `<span class="muted">Solution after the session</span>`}
+    </div>
+  </div>`).join("");
+
+/* dark-mode toggle (remembered per browser) */
+const root = document.documentElement;
+try { const t = localStorage.getItem("theme"); if (t) root.dataset.theme = t; } catch(e) {}
+document.getElementById("theme").onclick = () => {
+  const dark = root.dataset.theme ? root.dataset.theme === "dark"
+             : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("theme", root.dataset.theme); } catch(e) {}
+};
+</script>
+</body>
+</html>
