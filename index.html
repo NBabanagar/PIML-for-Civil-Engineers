@@ -318,20 +318,22 @@ const SITE = {
   showSolutions: false              // set to true after the session
 };
 
-/* File names must match exactly what is in your repo (case-sensitive). */
+/* File names must match exactly what is in your repo (case-sensitive).
+   ready:false shows "Coming soon" instead of the Colab button; set it to true once the file is uploaded.
+   solution:null means the notebook has no separate solution (a demo). */
 const NOTEBOOKS = [
   { id:"N0", title:"Why physics, and derivatives", when:"Blocks 1–2 · demo",
     desc:"Data-only fit versus the bending moment; finite differences versus autodiff at fourth order.",
-    student:"notebooks/N0_student.ipynb", solution:"notebooks/N0_solution.ipynb" },
+    student:"notebooks/N0_student.ipynb", solution:null, ready:true },
   { id:"N1", title:"Forward PINN", when:"Hands-on 1",
     desc:"Derivatives, physics loss, boundary loss, engineering values. Four TODOs.",
-    student:"notebooks/N1_student.ipynb", solution:"notebooks/N1_solution.ipynb" },
+    student:"notebooks/N1_student.ipynb", solution:"notebooks/N1_solution.ipynb", ready:true },
   { id:"N2", title:"Inverse PINN", when:"Hands-on 2",
     desc:"Recover the unknown load from sixteen noisy readings. Three TODOs and a class experiment.",
-    student:"notebooks/N2_student.ipynb", solution:"notebooks/N2_solution.ipynb" },
+    student:"notebooks/N2_student.ipynb", solution:"notebooks/N2_solution.ipynb", ready:false },
   { id:"N3", title:"Point load lab", when:"Block 8 · after the course",
     desc:"Narrow loads, extra points near the load, and domain decomposition with a one-line TODO.",
-    student:"notebooks/N3_student.ipynb", solution:"notebooks/N3_solution.ipynb" }
+    student:"notebooks/N3_student.ipynb", solution:"notebooks/N3_solution.ipynb", ready:false }
 ];
 /* ============================================= */
 
@@ -347,11 +349,13 @@ document.getElementById("nb-grid").innerHTML = NOTEBOOKS.map(n => `
     <h3>${n.title}</h3>
     <p>${n.desc}</p>
     <div class="actions">
+      ${n.ready ? `
       <a class="colab" href="${colab(n.student)}" target="_blank" rel="noopener">Open in Colab</a>
       <a href="${gh(n.student)}" target="_blank" rel="noopener">View on GitHub</a>
-      ${SITE.showSolutions
+      ${!n.solution ? "" : SITE.showSolutions
         ? `<a href="${colab(n.solution)}" target="_blank" rel="noopener">Solution</a>`
-        : `<span class="muted">Solution after the session</span>`}
+        : `<span class="muted">Solution after the session</span>`}`
+      : `<span class="muted">Coming soon</span>`}
     </div>
   </div>`).join("");
 
