@@ -33,7 +33,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-u
 a{color:var(--blue)}
 code{font-family:"JetBrains Mono",monospace;font-size:.9em}
 .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
-section{padding:64px 0;border-top:1px solid var(--line)}
+section{padding:64px 0;border-top:1px solid var(--line);scroll-margin-top:56px}
 section.alt{background:var(--bg-alt)}
 .eyebrow{font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
 h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.1;margin:0 0 16px;color:var(--brand)}
@@ -90,6 +90,8 @@ nav.links a:hover{color:var(--ink)}
 .steps li{counter-increment:s;position:relative;padding-left:48px}
 .steps li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--brand);color:var(--bg);display:grid;place-items:center;font-weight:700}
 .steps p{margin:2px 0 0;color:var(--ink-soft)}
+.setup-out{margin:24px 0 0;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow-x:auto;font-size:.85rem;line-height:1.55}
+.setup-out code{font-size:inherit}
 
 /* people, refs, faq */
 .person{display:grid;grid-template-columns:96px 1fr;gap:20px;align-items:start;margin-top:24px}
@@ -206,10 +208,25 @@ footer{padding:32px 0;border-top:1px solid var(--line);color:var(--ink-soft);fon
     <p class="lead">Everything runs in the browser on Google Colab. Nothing to install.</p>
     <ol class="steps">
       <li><h3>Sign in to Google</h3><p>Any Google account works. Colab is free.</p></li>
-      <li><h3>Open notebook N0 in Colab</h3><p>Use the button in <a href="#materials">Slides &amp; notebooks</a>, then choose <em>Runtime → Run all</em>. If it runs to the end without errors, you are ready.</p></li>
+      <li><h3>Open the setup check in Colab</h3>
+        <p>Click the button, then choose <em>Runtime → Run all</em>. If Colab warns that the notebook is from GitHub, click <em>Run anyway</em>. It checks PyTorch, NumPy and Matplotlib, tests automatic differentiation up to the fourth derivative, and trains a tiny physics-informed network.</p>
+        <div class="btn-row" style="margin-top:12px">
+          <a class="btn" id="setup-colab" href="#" target="_blank" rel="noopener">Open setup check in Colab</a>
+        </div>
+      </li>
+      <li><h3>Look for the last line</h3><p>It should say <strong>You are all set up</strong>. If a line shows ✗, follow the hint printed underneath, or send a screenshot of the output to the instructor.</p></li>
       <li><h3>Optional: a GPU</h3><p><em>Runtime → Change runtime type</em>. Not needed: every notebook is designed for the free CPU.</p></li>
     </ol>
-    <p style="margin-top:20px;color:var(--ink-soft)">Prefer your own laptop? Python 3.10 or newer, then <code>pip install torch numpy matplotlib jupyter</code>.</p>
+<pre class="setup-out"><code>✓  Python 3.9 or newer                    3.12
+✓  PyTorch 2.0 or newer                   2.x
+✓  NumPy                                  2.x
+✓  Matplotlib                             3.x
+✓  autograd 4th derivative (d⁴x⁴/dx⁴ = 24)
+✓  tiny PINN trains (loss falls 100x)
+✓  Matplotlib plots
+
+  ✅  You are all set up. See you in the course!</code></pre>
+    <p style="margin-top:20px;color:var(--ink-soft)">Prefer your own laptop? Python 3.10 or newer, then <code>pip install torch numpy matplotlib jupyter</code>, and run <a id="setup-gh" href="#" target="_blank" rel="noopener">the same notebook</a> in Jupyter.</p>
   </div>
 </section>
 
@@ -342,6 +359,8 @@ const colab = p => `https://colab.research.google.com/github/${SITE.user}/${SITE
 
 document.getElementById("slides-view").href = SITE.slides;
 document.getElementById("slides-dl").href   = SITE.slides;
+document.getElementById("setup-colab").href = colab("notebooks/setup_check.ipynb");
+document.getElementById("setup-gh").href    = gh("notebooks/setup_check.ipynb");
 
 document.getElementById("nb-grid").innerHTML = NOTEBOOKS.map(n => `
   <div class="card nb">
