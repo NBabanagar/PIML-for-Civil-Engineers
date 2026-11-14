@@ -188,9 +188,9 @@ footer{padding:32px 0;border-top:1px solid var(--line);color:var(--ink-soft);fon
     <div class="card slides-card">
       <div>
         <h3>Lecture slides</h3>
-        <p>All 63 slides, as a PDF.</p>
+        <p id="slides-note">The full deck, as a PDF.</p>
       </div>
-      <div class="btn-row">
+      <div class="btn-row" id="slides-btns">
         <a class="btn" id="slides-view" href="#" target="_blank" rel="noopener">View slides</a>
         <a class="btn ghost" id="slides-dl" href="#" download>Download PDF</a>
       </div>
@@ -332,6 +332,7 @@ const SITE = {
   repo:   "PIML-for-Civil-Engineers",
   branch: "main",
   slides: "slides/PIML_short_course.pdf",
+  slidesReady: false,               // set to true after the course, once the PDF is uploaded
   showSolutions: false              // set to true after the session
 };
 
@@ -357,8 +358,13 @@ const NOTEBOOKS = [
 const gh    = p => `https://github.com/${SITE.user}/${SITE.repo}/blob/${SITE.branch}/${p}`;
 const colab = p => `https://colab.research.google.com/github/${SITE.user}/${SITE.repo}/blob/${SITE.branch}/${p}`;
 
-document.getElementById("slides-view").href = SITE.slides;
-document.getElementById("slides-dl").href   = SITE.slides;
+if (SITE.slidesReady) {
+  document.getElementById("slides-view").href = SITE.slides;
+  document.getElementById("slides-dl").href   = SITE.slides;
+} else {
+  document.getElementById("slides-btns").innerHTML = '<span class="muted" style="color:var(--ink-soft)">Available after the course</span>';
+  document.getElementById("slides-note").textContent = "The full deck will be shared here as a PDF once the course is over.";
+}
 document.getElementById("setup-colab").href = colab("notebooks/setup_check.ipynb");
 document.getElementById("setup-gh").href    = gh("notebooks/setup_check.ipynb");
 
