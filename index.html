@@ -347,14 +347,14 @@ footer{border-top:1.5px solid var(--ink);background:var(--surface)}
     <div class="legend"><span>Lecture</span><span class="h">Hands-on</span></div>
     <ol class="sched">
       <li><time>0:00</time><strong>Why physics-informed ML?</strong><span class="tag">N0</span><p>Engineering decisions that need many runs, four challenges for data-only models, where bias enters, the PgNN / PINN / PeNN spectrum</p></li>
-      <li><time>0:15</time><strong>How networks learn and differentiate</strong><span class="tag">N0</span><p>Forward pass, backpropagation, derivatives with respect to the input, finite differences versus autodiff, activations</p></li>
-      <li><time>0:30</time><strong>Anatomy of a PINN</strong><span class="tag">N1</span><p>The workflow, collocation points and boundary terms, non-dimensionalisation, loss weights</p></li>
-      <li class="hands"><time>0:50</time><strong>Hands-on 1: the forward PINN</strong><span class="tag">N1</span><p>Four TODOs, checked against statics</p></li>
+      <li><time>0:18</time><strong>How networks learn and differentiate</strong><span class="tag">N0</span><p>Forward pass, backpropagation, derivatives with respect to the input, finite differences versus autodiff, activations</p></li>
+      <li><time>0:35</time><strong>Anatomy of a PINN</strong><span class="tag">N1</span><p>The workflow, collocation points and boundary terms, non-dimensionalisation, loss weights</p></li>
+      <li class="hands"><time>0:55</time><strong>Hands-on 1: the forward PINN</strong><span class="tag">N1</span><p>Four TODOs, checked against statics, then class experiment 1</p></li>
       <li class="brk"><time>1:25</time><strong>Break</strong></li>
       <li><time>1:35</time><strong>Inverse problems: back-analysis of the load</strong><span class="tag">N2</span><p>What is unknown on a real wall, the inverse loss, PINN versus data-only</p></li>
-      <li class="hands"><time>1:50</time><strong>Hands-on 2: the inverse PINN</strong><span class="tag">N2</span><p>Recover the load from sixteen noisy readings, then a class experiment on sensors and noise</p></li>
+      <li class="hands"><time>1:50</time><strong>Hands-on 2: the inverse PINN</strong><span class="tag">N2</span><p>Recover the load from sixteen noisy readings, then class experiments 2 and 3</p></li>
       <li><time>2:20</time><strong>Failure modes of PINNs, and remedies</strong><span class="tag">N3</span><p>Loss balancing, self-adaptive PINNs, adaptive sampling, hard constraints, weak form; the point load, spectral bias and domain decomposition; why neural operators</p></li>
-      <li><time>2:50</time><strong>Wrap-up</strong><p>What we learned, and when to use a PINN</p></li>
+      <li><time>2:52</time><strong>Wrap-up</strong><p>What we learned, and when to use a PINN</p></li>
     </ol>
   </div>
 </section>
@@ -525,18 +525,18 @@ const SITE = {
    ready:false shows "Coming soon" instead of the Colab button; set it to true once the file is uploaded.
    solution:null means the notebook has no separate solution (a demo). */
 const NOTEBOOKS = [
-  { id:"N0", title:"Why physics, and derivatives", when:"Blocks 1–2 · demo",
-    desc:"Data-only fit versus the bending moment; finite differences versus autodiff at fourth order.",
-    student:"notebooks/N0_student.ipynb", solution:null, ready:true },
-  { id:"N1", title:"Forward PINN", when:"Hands-on 1",
-    desc:"Derivatives, physics loss, boundary loss, engineering values. Four TODOs.",
-    student:"notebooks/N1_student.ipynb", solution:"notebooks/N1_solution.ipynb", ready:true },
-  { id:"N2", title:"Inverse PINN", when:"Hands-on 2",
-    desc:"Recover the unknown load from sixteen noisy readings. Three TODOs and a class experiment.",
-    student:"notebooks/N2_student.ipynb", solution:"notebooks/N2_solution.ipynb", ready:false },
-  { id:"N3", title:"Point load lab", when:"Block 8 · after the course",
-    desc:"Narrow loads, extra points near the load, and domain decomposition with a one-line TODO.",
-    student:"notebooks/N3_student.ipynb", solution:"notebooks/N3_solution.ipynb", ready:false }
+  { id:"N0", title:"PyTorch in small steps, and why physics", when:"Blocks 1–2 · shown on screen",
+    desc:"Every PyTorch function the course needs, each in a tiny example, then the reason for PINNs: a network fits sixteen readings almost perfectly and is still wrong about the moment at the clamp. Outputs are saved, so it reads without running.",
+    student:"notebooks/N0_teaching.ipynb", solution:null, ready:true },
+  { id:"N1", title:"Forward PINN: the cantilever", when:"Hands-on 1 · yours",
+    desc:"Four TODOs: the derivatives, the physics loss, the boundary loss, and the check against statics. The network sees no measurements at all. Ends with class experiment 1, on the balance of the loss.",
+    student:"notebooks/N1.ipynb", solution:"notebooks/N1_solution.ipynb", ready:true },
+  { id:"N2", title:"Inverse PINN: what loads is it carrying?", when:"Hands-on 2 · yours",
+    desc:"Three TODOs: each unknown load becomes one more trainable number, recovered from sixteen noisy readings. Class experiments 2 and 3, on the width of a point load and on the loss weights.",
+    student:"notebooks/N2.ipynb", solution:"notebooks/N2_solution.ipynb", ready:true },
+  { id:"N3", title:"The point-load lab", when:"Block 8 · shown on screen",
+    desc:"Where a PINN struggles: a concentrated load, spectral bias, the cheap fixes that do not cure it, domain decomposition, and what the sensors can actually identify. Outputs are saved.",
+    student:"notebooks/N3_demo.ipynb", solution:null, ready:true }
 ];
 /* ============================================= */
 
