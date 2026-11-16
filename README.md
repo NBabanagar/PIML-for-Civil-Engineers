@@ -9,8 +9,7 @@ Course website: https://nbabanagar.github.io/PIML-for-Civil-Engineers/
 | Folder | What is in it |
 |---|---|
 | `index.html` | The course website |
-| `slides/` | Lecture slides (PDF) |
-| `notebooks/` | Colab notebooks N0–N3 (student versions; solutions after the session) |
+| `notebooks/` | Colab notebooks: N0 (shown on screen), N1 and N2 (hands-on) |
 | `assets/img/` | Images used on the website |
 
 ## Running the notebooks

@@ -282,7 +282,7 @@ footer{border-top:1.5px solid var(--ink);background:var(--surface)}
     <dl class="titleblock">
       <div><dt>Course</dt><dd>British Council short course</dd></div>
       <div><dt>Length</dt><dd>3 hours, two hands-on blocks</dd></div>
-      <div><dt>Notebooks</dt><dd>4, in Google Colab</dd></div>
+      <div><dt>Notebooks</dt><dd>3, in Google Colab</dd></div>
       <div><dt>Runs on</dt><dd>The free Colab CPU</dd></div>
       <div><dt>You need</dt><dd>Some Python</dd></div>
     </dl>
@@ -353,7 +353,7 @@ footer{border-top:1.5px solid var(--ink);background:var(--surface)}
       <li class="brk"><time>1:25</time><strong>Break</strong></li>
       <li><time>1:35</time><strong>Inverse problems: back-analysis of the load</strong><span class="tag">N2</span><p>What is unknown on a real wall, the inverse loss, PINN versus data-only</p></li>
       <li class="hands"><time>1:50</time><strong>Hands-on 2: the inverse PINN</strong><span class="tag">N2</span><p>Recover the load from sixteen noisy readings, then class experiments 2 and 3</p></li>
-      <li><time>2:20</time><strong>Failure modes of PINNs, and remedies</strong><span class="tag">N3</span><p>Loss balancing, self-adaptive PINNs, adaptive sampling, hard constraints, weak form; the point load, spectral bias and domain decomposition; why neural operators</p></li>
+      <li><time>2:20</time><strong>Failure modes of PINNs, and remedies</strong><p>Loss balancing, self-adaptive PINNs, adaptive sampling, hard constraints, weak form; the point load, spectral bias and domain decomposition; why neural operators</p></li>
       <li><time>2:52</time><strong>Wrap-up</strong><p>What we learned, and when to use a PINN</p></li>
     </ol>
   </div>
@@ -362,19 +362,8 @@ footer{border-top:1.5px solid var(--ink);background:var(--surface)}
 <!-- MATERIALS -->
 <section id="materials">
   <div class="wrap">
-    <h2>Slides and notebooks</h2>
-    <p class="lead">Each notebook opens directly in Google Colab. Use <em>File → Save a copy in Drive</em> to keep your own edits.</p>
-
-    <div class="card slides-card">
-      <div>
-        <h3>Lecture slides</h3>
-        <p id="slides-note">The full deck, as a PDF.</p>
-      </div>
-      <div class="btn-row" id="slides-btns" style="margin-top:0">
-        <a class="btn" id="slides-view" href="#" target="_blank" rel="noopener">View slides</a>
-        <a class="btn ghost" id="slides-dl" href="#" download>Download PDF</a>
-      </div>
-    </div>
+    <h2>Course notebooks</h2>
+    <p class="lead">Three notebooks, all in Google Colab, with nothing to install. Each opens in your own account: use <em>File → Save a copy in Drive</em> to keep your edits. N0 is shown on screen during the course; N1 and N2 are the two hands-on sessions.</p>
 
     <div class="grid" id="nb-grid"><!-- filled by the script at the bottom --></div>
   </div>
@@ -435,10 +424,10 @@ footer{border-top:1.5px solid var(--ink);background:var(--surface)}
   </div>
 </section>
 
-<!-- REFERENCES: from the deck's reference slides (slides 62 and 63) -->
+<!-- REFERENCES -->
 <section id="references">
   <div class="wrap">
-    <h2>Sources used in the slides</h2>
+    <h2>References and further reading</h2>
 
     <h3>Course case study</h3>
     <ul class="refs">
@@ -516,8 +505,6 @@ const SITE = {
   user:   "NBabanagar",
   repo:   "PIML-for-Civil-Engineers",
   branch: "main",
-  slides: "slides/PIML_short_course.pdf",
-  slidesReady: false,               // set to true after the course, once the PDF is uploaded
   showSolutions: false              // set to true after the session
 };
 
@@ -533,23 +520,13 @@ const NOTEBOOKS = [
     student:"notebooks/N1.ipynb", solution:"notebooks/N1_solution.ipynb", ready:true },
   { id:"N2", title:"Inverse PINN: what loads is it carrying?", when:"Hands-on 2 · yours",
     desc:"Three TODOs: each unknown load becomes one more trainable number, recovered from sixteen noisy readings. Class experiments 2 and 3, on the width of a point load and on the loss weights.",
-    student:"notebooks/N2.ipynb", solution:"notebooks/N2_solution.ipynb", ready:true },
-  { id:"N3", title:"The point-load lab", when:"Block 8 · shown on screen",
-    desc:"Where a PINN struggles: a concentrated load, spectral bias, the cheap fixes that do not cure it, domain decomposition, and what the sensors can actually identify. Outputs are saved.",
-    student:"notebooks/N3_demo.ipynb", solution:null, ready:true }
+    student:"notebooks/N2.ipynb", solution:"notebooks/N2_solution.ipynb", ready:true }
 ];
 /* ============================================= */
 
 const gh    = p => `https://github.com/${SITE.user}/${SITE.repo}/blob/${SITE.branch}/${p}`;
 const colab = p => `https://colab.research.google.com/github/${SITE.user}/${SITE.repo}/blob/${SITE.branch}/${p}`;
 
-if (SITE.slidesReady) {
-  document.getElementById("slides-view").href = SITE.slides;
-  document.getElementById("slides-dl").href   = SITE.slides;
-} else {
-  document.getElementById("slides-btns").innerHTML = '<span class="muted" style="color:var(--ink-soft)">Available after the course</span>';
-  document.getElementById("slides-note").textContent = "The full deck will be shared here as a PDF once the course is over.";
-}
 document.getElementById("setup-colab").href = colab("notebooks/setup_check.ipynb");
 document.getElementById("setup-gh").href    = gh("notebooks/setup_check.ipynb");
 
