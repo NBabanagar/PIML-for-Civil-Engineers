@@ -174,7 +174,8 @@ section.alt .sched li::before{background:var(--paper-2)}
 .num{font-family:var(--mono);color:var(--load);font-weight:500;font-size:.88rem}
 .nb .meta{font-size:.88rem;color:var(--ink-soft);margin-bottom:6px}
 .nb p{margin:6px 0 0;color:var(--ink-soft);font-size:.97rem}
-.nb .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.card.nb{display:flex;flex-direction:column}
+.nb .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:18px}
 .nb .actions a{font-size:.9rem;text-decoration:none;padding:7px 12px;border-radius:6px;border:1px solid var(--line);color:var(--ink)}
 .nb .actions a.colab{background:var(--load);border-color:var(--load);color:var(--load-ink);font-weight:600}
 .muted{font-size:.9rem;color:var(--ink-soft);padding:7px 0}
@@ -196,6 +197,7 @@ section.alt .sched li::before{background:var(--paper-2)}
 .person{display:grid;grid-template-columns:132px minmax(0,1fr);gap:28px;align-items:start;margin-top:28px;max-width:860px}
 .avatar{width:132px;height:132px;border-radius:50%;overflow:hidden;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.hosted{margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line);color:var(--steel);font-size:.9rem;max-width:40ch}
 .person .role{margin:0;color:var(--ink-soft)}
 .links-row{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px}
 @media (max-width:560px){.person{grid-template-columns:1fr}.avatar{width:112px;height:112px}}
@@ -207,7 +209,7 @@ section.alt .sched li::before{background:var(--paper-2)}
 
 /* footer */
 footer{border-top:1.5px solid var(--ink);background:var(--surface)}
-.foot{display:grid;grid-template-columns:2fr 1fr 1fr;font-size:.92rem}
+.foot{display:grid;grid-template-columns:1.5fr 1.3fr 1fr;font-size:.92rem}
 .foot div{padding:16px 0 18px;border-left:1px solid var(--line);padding-left:16px}
 .foot div:first-child{border-left:0;padding-left:0}
 .foot dt{font-size:.78rem;color:var(--steel)}
@@ -241,6 +243,7 @@ footer{border-top:1.5px solid var(--ink);background:var(--surface)}
       <div>
         <h1>Physics-informed machine learning for civil engineers</h1>
         <p class="lead">Build a physics-informed neural network from scratch in PyTorch, on one cantilever beam you can check by hand: a simple model of an embedded retaining wall.</p>
+        <p class="hosted">A British Council workshop, hosted by the Pontifical Catholic University of Peru</p>
         <div class="btn-row">
           <a class="btn" href="#materials">Open the notebooks</a>
           <a class="btn ghost" href="#setup">Check your setup</a>
@@ -280,7 +283,7 @@ footer{border-top:1.5px solid var(--ink);background:var(--surface)}
 </svg>
     </div>
     <dl class="titleblock">
-      <div><dt>Course</dt><dd>British Council short course</dd></div>
+      <div><dt>Format</dt><dd>Online, live</dd></div>
       <div><dt>Length</dt><dd>3 hours, two hands-on blocks</dd></div>
       <div><dt>Notebooks</dt><dd>3, in Google Colab</dd></div>
       <div><dt>Runs on</dt><dd>The free Colab CPU</dd></div>
@@ -397,7 +400,7 @@ footer{border-top:1.5px solid var(--ink);background:var(--surface)}
 
   ✅  You are all set up. See you in the course!</code></pre>
         <p class="setup-cap">What a successful run looks like.</p>
-        <p style="margin-top:20px;color:var(--ink-soft)">Prefer your own laptop? Python 3.10 or newer, then <code>pip install torch numpy matplotlib jupyter</code>, and run <a id="setup-gh" href="#" target="_blank" rel="noopener">the same notebook</a> in Jupyter.</p>
+        <p style="margin-top:20px;color:var(--ink-soft)">Prefer your own laptop? Python 3.10 or newer, then <code>pip install torch numpy matplotlib jupyter</code>, and open the setup notebook in Colab and use <em>File &rarr; Download &rarr; .ipynb</em> to run it in Jupyter.</p>
       </div>
     </div>
   </div>
@@ -493,7 +496,7 @@ footer{border-top:1.5px solid var(--ink);background:var(--surface)}
   <div class="wrap">
     <dl class="foot">
       <div><dt>Course</dt><dd>Physics-informed machine learning for civil engineers</dd></div>
-      <div><dt>Delivered for</dt><dd>British Council</dd></div>
+      <div><dt>Delivered for</dt><dd>British Council workshop, Pontifical Catholic University of Peru</dd></div>
       <div><dt>From</dt><dd>University of Cambridge</dd></div>
     </dl>
   </div>
@@ -505,7 +508,7 @@ const SITE = {
   user:   "NBabanagar",
   repo:   "PIML-for-Civil-Engineers",
   branch: "main",
-  showSolutions: false              // set to true after the session
+  showSolutions: false              // true adds a Solution button to N1 and N2
 };
 
 /* File names must match exactly what is in your repo (case-sensitive).
@@ -524,11 +527,9 @@ const NOTEBOOKS = [
 ];
 /* ============================================= */
 
-const gh    = p => `https://github.com/${SITE.user}/${SITE.repo}/blob/${SITE.branch}/${p}`;
 const colab = p => `https://colab.research.google.com/github/${SITE.user}/${SITE.repo}/blob/${SITE.branch}/${p}`;
 
 document.getElementById("setup-colab").href = colab("notebooks/setup_check.ipynb");
-document.getElementById("setup-gh").href    = gh("notebooks/setup_check.ipynb");
 
 document.getElementById("nb-grid").innerHTML = NOTEBOOKS.map(n => `
   <div class="card nb">
@@ -538,10 +539,8 @@ document.getElementById("nb-grid").innerHTML = NOTEBOOKS.map(n => `
     <div class="actions">
       ${n.ready ? `
       <a class="colab" href="${colab(n.student)}" target="_blank" rel="noopener">Open in Colab</a>
-      <a href="${gh(n.student)}" target="_blank" rel="noopener">View on GitHub</a>
-      ${!n.solution ? "" : SITE.showSolutions
-        ? `<a href="${colab(n.solution)}" target="_blank" rel="noopener">Solution</a>`
-        : `<span class="muted">Solution after the session</span>`}`
+      ${n.solution && SITE.showSolutions
+        ? `<a href="${colab(n.solution)}" target="_blank" rel="noopener">Solution</a>` : ""}`
       : `<span class="muted">Coming soon</span>`}
     </div>
   </div>`).join("");
